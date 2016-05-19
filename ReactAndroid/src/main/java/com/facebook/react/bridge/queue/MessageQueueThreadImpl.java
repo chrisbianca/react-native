@@ -175,7 +175,8 @@ public class MessageQueueThreadImpl implements MessageQueueThread {
       QueueThreadExceptionHandler exceptionHandler) {
     final SimpleSettableFuture<Looper> looperFuture = new SimpleSettableFuture<>();
     final SimpleSettableFuture<MessageQueueThread> mqtFuture = new SimpleSettableFuture<>();
-    Thread bgThread = new Thread(
+    ThreadGroup group = new ThreadGroup("mqtGroup_" + name);
+    Thread bgThread = new Thread(group,
         new Runnable() {
           @Override
           public void run() {
@@ -186,7 +187,7 @@ public class MessageQueueThreadImpl implements MessageQueueThread {
 
             Looper.loop();
           }
-        }, "mqt_" + name);
+        }, "mqt_" + name, 256000);
     bgThread.start();
 
     Looper myLooper = looperFuture.getOrThrow();
