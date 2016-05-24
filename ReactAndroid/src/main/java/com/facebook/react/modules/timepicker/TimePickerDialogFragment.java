@@ -54,6 +54,7 @@ public class TimePickerDialogFragment extends DialogFragment {
 
     return new DismissableTimePickerDialog(
         activityContext,
+        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
         onTimeSetListener,
         hour,
         minute,
