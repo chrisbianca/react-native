@@ -155,6 +155,13 @@ RCT_EXPORT_MODULE()
                                                     userInfo:@{@"deviceToken" : [hexString copy]}];
 }
 
++ (void)didRegisterForRemoteNotificationsWithDeviceTokenString:(NSString *)deviceToken
+{
+  [[NSNotificationCenter defaultCenter] postNotificationName:RCTRemoteNotificationsRegistered
+                                                      object:self
+                                                    userInfo:@{@"deviceToken" : [deviceToken copy]}];
+}
+
 + (void)didReceiveRemoteNotification:(NSDictionary *)notification
 {
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTRemoteNotificationReceived
