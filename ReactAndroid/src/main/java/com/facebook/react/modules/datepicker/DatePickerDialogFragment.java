@@ -54,7 +54,7 @@ public class DatePickerDialogFragment extends DialogFragment {
     final int day = c.get(Calendar.DAY_OF_MONTH);
 
     final DatePickerDialog dialog =
-        new DismissableDatePickerDialog(activityContext, onDateSetListener, year, month, day);
+        new DismissableDatePickerDialog(activityContext, android.R.style.Theme_Holo_Light_Dialog_MinWidth, onDateSetListener, year, month, day);
     final DatePicker datePicker = dialog.getDatePicker();
 
     if (args != null && args.containsKey(DatePickerDialogModule.ARG_MINDATE)) {
