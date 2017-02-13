@@ -137,8 +137,8 @@ static void RCTResolvePromise(RCTPromiseResolveBlock resolve,
   resolve(@{
     @"edges": assets,
     @"page_info": @{
-      @"start_cursor": assets[0][@"node"][@"image"][@"uri"],
-      @"end_cursor": assets[assets.count - 1][@"node"][@"image"][@"uri"],
+      @"start_cursor": assets[0][@"node"][@"image"] != [NSNull null] ? assets[0][@"node"][@"image"][@"uri"] : assets[0][@"node"][@"video"][@"uri"],
+      @"end_cursor": assets[assets.count - 1][@"node"][@"image"] != [NSNull null] ? assets[assets.count - 1][@"node"][@"image"][@"uri"] : assets[assets.count - 1][@"node"][@"video"][@"uri"],
       @"has_next_page": @(hasNextPage),
     }
   });
@@ -187,25 +187,34 @@ RCT_EXPORT_METHOD(getPhotos:(NSDictionary *)params
           CLLocation *loc = [result valueForProperty:ALAssetPropertyLocation];
           NSDate *date = [result valueForProperty:ALAssetPropertyDate];
           NSString *filename = [result defaultRepresentation].filename;
+          NSString *assetType = [result valueForProperty:ALAssetPropertyType];
+
           [assets addObject:@{
             @"node": @{
-              @"type": [result valueForProperty:ALAssetPropertyType],
+              @"type": assetType,
               @"group_name": [group valueForProperty:ALAssetsGroupPropertyName],
-              @"image": @{
+              @"image": [assetType isEqualToString:ALAssetTypePhoto] ? @{
                 @"uri": uri,
                 @"filename" : filename,
                 @"height": @(dimensions.height),
                 @"width": @(dimensions.width),
                 @"isStored": @YES,
-              },
-              @"timestamp": @(date.timeIntervalSince1970),
-              @"location": loc ? @{
-                @"latitude": @(loc.coordinate.latitude),
-                @"longitude": @(loc.coordinate.longitude),
-                @"altitude": @(loc.altitude),
-                @"heading": @(loc.course),
-                @"speed": @(loc.speed),
-              } : @{},
+              }: [NSNull null],
+              @"video": [assetType isEqualToString:ALAssetTypeVideo] ? @{
+                @"uri": uri,
+                @"filename" : filename,
+                @"height": @(dimensions.height),
+                @"width": @(dimensions.width),
+                @"isStored": @YES,
+              }: [NSNull null],
+            @"timestamp": @(date.timeIntervalSince1970),
+            @"location": loc ? @{
+              @"latitude": @(loc.coordinate.latitude),
+              @"longitude": @(loc.coordinate.longitude),
+              @"altitude": @(loc.altitude),
+              @"heading": @(loc.course),
+              @"speed": @(loc.speed),
+              } : [NSNull null],
             }
           }];
         }
